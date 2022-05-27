@@ -19,8 +19,6 @@ interface UserActionListener {
     fun onUserDelete(user: User)
 
     fun onUserDetails(user: User)
-
-    fun onUserFire(user: User)
 }
 
 class UsersDiffCallback(
@@ -121,9 +119,6 @@ class UsersAdapter(
             isEnabled = position < users.size - 1
         }
         popupMenu.menu.add(0, ID_REMOVE, Menu.NONE, context.getString(R.string.remove))
-        if (user.company.isNotBlank()) {
-            popupMenu.menu.add(0, ID_FIRE, Menu.NONE, context.getString(R.string.fire))
-        }
 
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -135,9 +130,6 @@ class UsersAdapter(
                 }
                 ID_REMOVE -> {
                     actionListener.onUserDelete(user)
-                }
-                ID_FIRE -> {
-                    actionListener.onUserFire(user)
                 }
             }
             return@setOnMenuItemClickListener true
@@ -154,6 +146,5 @@ class UsersAdapter(
         private const val ID_MOVE_UP = 1
         private const val ID_MOVE_DOWN = 2
         private const val ID_REMOVE = 3
-        private const val ID_FIRE = 4
     }
 }
