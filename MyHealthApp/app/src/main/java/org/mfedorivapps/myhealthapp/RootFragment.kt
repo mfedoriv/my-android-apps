@@ -19,23 +19,34 @@ class RootFragment : Fragment(R.layout.fragment_root) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentRootBinding.bind(view)
         binding.openYellowBoxButton.setOnClickListener {
-            openBox(Color.rgb(255, 255, 200))
+            openBox(Color.rgb(255, 255, 200), getString(R.string.yellow))
         }
         binding.openGreenBoxButton.setOnClickListener {
-            openBox(Color.rgb(200, 255, 200))
+            openBox(Color.rgb(200, 255, 200), getString(R.string.green))
+        }
+        // listening for the results from BoxFragment
+        val liveData = findNavController().currentBackStackEntry?.savedStateHandle
+            ?.getLiveData<Int>(BoxFragment.EXTRA_RANDOM_NUMBER)
+        liveData?.observe(viewLifecycleOwner) { randomNumber ->
+            if (randomNumber != null) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.generated_number, randomNumber),
+                    Toast.LENGTH_SHORT
+                ).show()
+                // clear data to show Toast only once with rotating screen -> because savedStateEntry creates again after rotation
+                liveData.value = null
+            }
         }
 
-        // listening for the results from BoxFragment
-        parentFragmentManager.setFragmentResultListener(BoxFragment.REQUEST_CODE, viewLifecycleOwner) { _, data ->
-            val number = data.getInt(BoxFragment.EXTRA_RANDOM_NUMBER)
-            Toast.makeText(requireContext(), getString(R.string.generated_number, number), Toast.LENGTH_SHORT).show()
-        }
     }
 
-    private fun openBox(color:Int) {
+    private fun openBox(color:Int, colorName: String) {
+
+        val direction = RootFragmentDirections.actionRootFragmentToBoxFragment(color, colorName)
+
         findNavController().navigate(
-            R.id.action_rootFragment_to_boxFragment, // nav action to be executed
-            bundleOf(BoxFragment.ARG_COLOR to color), // arguments for the destination
+            direction, // arguments for the destination
             // optional additional options, example of simple animation:
             navOptions {
                 anim {

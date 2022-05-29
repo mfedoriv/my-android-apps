@@ -10,4 +10,6 @@
     <string name="close_secret">Close Secret</string>
     <string name="close_the_whole_box">Close the whole box</string>
     <string name="generated_number">Generated number %d</string>
+    <string name="yellow">Yellow</string>
+    <string name="green">Green</string>
 </resources>
